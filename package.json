@@ -2,24 +2,18 @@
   "name": "grunt-deconst-assets",
   "description": "Submits assets to a deconst asset store",
   "version": "0.1.0",
-  "homepage": "https://github.com/ktbartholomew/grunt-deconst-assets",
+  "homepage": "https://github.com/deconst/grunt-deconst-assets",
   "author": {
     "name": "Keith Bartholomew",
     "email": "keith.bartholomew@rackspace.com"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/ktbartholomew/grunt-deconst-assets.git"
+    "url": "git@github.com:deconst/grunt-deconst-assets.git"
   },
   "bugs": {
-    "url": "https://github.com/ktbartholomew/grunt-deconst-assets/issues"
+    "url": "https://github.com/deconst/grunt-deconst-assets/issues"
   },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://github.com/ktbartholomew/grunt-deconst-assets/blob/master/LICENSE-MIT"
-    }
-  ],
   "engines": {
     "node": ">= 0.8.0"
   },
