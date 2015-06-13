@@ -8,43 +8,63 @@
 
 'use strict';
 
+var fs = require('fs');
+var path = require('path');
+var mime = require('mime-types');
+var request = require('request');
+var validateConfig = require('../lib/config-validator');
+
 module.exports = function(grunt) {
+    grunt.registerMultiTask('deconst_assets', 'Submits assets to a deconst asset store', function() {
+        var task = this;
+        var done = this.async();
+        var uploadedFiles = 0;
+        var uploads = [];
 
-  // Please see the Grunt documentation for more information regarding task
-  // creation: http://gruntjs.com/creating-tasks
-
-  grunt.registerMultiTask('deconst_assets', 'Submits assets to a deconst asset store', function() {
-    // Merge task-specific and/or target-specific options with these defaults.
-    var options = this.options({
-      punctuation: '.',
-      separator: ', '
-    });
-
-    // Iterate over all specified file groups.
-    this.files.forEach(function(f) {
-      // Concat specified files.
-      var src = f.src.filter(function(filepath) {
-        // Warn on and remove invalid source files (if nonull was set).
-        if (!grunt.file.exists(filepath)) {
-          grunt.log.warn('Source file "' + filepath + '" not found.');
-          return false;
-        } else {
-          return true;
+        if(validateConfig.bind({env: process.env, options: this.options()})() !== false) {
+            return grunt.fail.fatal(validateConfig.bind({env: process.env, options: this.options()})());
         }
-      }).map(function(filepath) {
-        // Read file source.
-        return grunt.file.read(filepath);
-      }).join(grunt.util.normalizelf(options.separator));
 
-      // Handle options.
-      src += options.punctuation;
+        var afterUpload = function () {
+            console.log(uploads);
+            done(uploads);
+        };
 
-      // Write the destination file.
-      grunt.file.write(f.dest, src);
+        var taskFiles = grunt.file.expand({filter: 'isFile'}, this.options().files);
 
-      // Print a success message.
-      grunt.log.writeln('File "' + f.dest + '" created.');
+        taskFiles.forEach(function (file, index, scope) {
+            var safeName = file.replace(/(\/|\.|\-)/g, '_');
+            var formData = {};
+
+            formData[safeName] = {
+                value: fs.createReadStream(path.resolve(file)),
+                options: {
+                    contentType: mime.lookup(path.extname(file))
+                }
+            };
+
+            request.post({
+                url: task.options().contentServiceUrl + '/assets?named=true',
+                headers: {
+                    'Authorization': 'deconst apikey="' + task.options().contentServiceKey + '"'
+                },
+                formData: formData
+            }, function (error, response, body) {
+                var jsonBody = JSON.parse(body);
+                uploads.push({
+                    safeName: safeName,
+                    url: jsonBody[path.basename(file)]
+                });
+
+                uploadedFiles++;
+
+                console.log('%s of %s files uploaded.', uploadedFiles, scope.length);
+
+                if(uploadedFiles === scope.length) {
+                    afterUpload();
+                }
+            });
+        });
     });
-  });
 
 };
