@@ -12,25 +12,40 @@ var fs = require('fs');
 var path = require('path');
 var mime = require('mime-types');
 var request = require('request');
-var validateConfig = require('../lib/config-validator');
+var ConfigService = require('../lib/services/config');
 
 module.exports = function(grunt) {
     grunt.registerMultiTask('deconst_assets', 'Submits assets to a deconst asset store', function() {
         var task = this;
         var done = this.async();
+        var taskFiles = grunt.file.expand({filter: 'isFile'}, this.options().files);
         var uploadedFiles = 0;
-        var uploads = [];
+        var uploads = {};
 
-        if(validateConfig.bind({env: process.env, options: this.options()})() !== false) {
-            return grunt.fail.fatal(validateConfig.bind({env: process.env, options: this.options()})());
+        if(ConfigService.load({env: process.env, options: this.options()}) !== true) {
+            return grunt.fail.fatal(ConfigService.load({env: process.env, options: this.options()}));
         }
 
-        var afterUpload = function () {
-            console.log(uploads);
-            done(uploads);
-        };
+        var afterUpload = function (uploads) {
+            if( !this.options().output) {
+                return;
+            }
 
-        var taskFiles = grunt.file.expand({filter: 'isFile'}, this.options().files);
+            this.options().output.forEach(function (output, index, scope) {
+                var formatter;
+
+                try {
+                    formatter = require('../lib/formatters/' + output.format);
+                }
+                catch (e) {
+                    grunt.fail.fatal('\'' + output.format + '\' is not an allowed output format.');
+                }
+
+                formatter({dest: output.dest, data: uploads});
+            });
+
+            done();
+        };
 
         taskFiles.forEach(function (file, index, scope) {
             var safeName = file.replace(/(\/|\.|\-)/g, '_');
@@ -44,27 +59,31 @@ module.exports = function(grunt) {
             };
 
             request.post({
-                url: task.options().contentServiceUrl + '/assets?named=true',
+                url: ConfigService.get('url') + '/assets?named=true',
                 headers: {
-                    'Authorization': 'deconst apikey="' + task.options().contentServiceKey + '"'
+                    'Authorization': 'deconst apikey="' + ConfigService.get('key') + '"'
                 },
                 formData: formData
             }, function (error, response, body) {
-                var jsonBody = JSON.parse(body);
-                uploads.push({
-                    safeName: safeName,
-                    url: jsonBody[path.basename(file)]
-                });
+                var jsonBody;
 
+                try {
+                    jsonBody = JSON.parse(body);
+                }
+                catch (e) {
+                    console.warn(error);
+                    grunt.fail.fatal(e);
+                }
+
+                uploads[safeName] = jsonBody[path.basename(file)];
                 uploadedFiles++;
 
                 console.log('%s of %s files uploaded.', uploadedFiles, scope.length);
 
                 if(uploadedFiles === scope.length) {
-                    afterUpload();
+                    afterUpload.bind(task)(uploads);
                 }
             });
         });
     });
-
 };

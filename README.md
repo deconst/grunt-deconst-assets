@@ -24,66 +24,56 @@ In your project's Gruntfile, add a section named `deconst_assets` to the data ob
 
 ```js
 grunt.initConfig({
-  deconst_assets: {
-    options: {
-      // Task-specific options go here.
+    deconst_assets: {
+        images: {
+            options: {
+                contentServiceUrl: 'http://content:9000/',
+                contentServiceKey: '1234567890',
+                files: ['src/images/**/*'],
+                output: [
+                    dest: 'src/less/image-urls.less',
+                    format: 'less'
+                ]
+            }
+        },
     },
-    your_target: {
-      // Target-specific file lists and/or options go here.
-    },
-  },
 });
 ```
 
 ### Options
 
-#### options.separator
+#### options.contentServiceUrl
 Type: `String`
-Default value: `',  '`
 
-A string value that is used to do something with whatever.
+The URL to your content service **with a trailing slash**. Alternatively, you can set the CONTENT_SERVICE_URL environment variable to this value.
 
-#### options.punctuation
+#### options.contentServiceKey
 Type: `String`
-Default value: `'.'`
 
-A string value that is used to do something else with whatever else.
+The API key used to authenticate with your content service. Alternatively, you can set the CONTENT_SERVICE_APIKEY environment variable to this value.
 
-### Usage Examples
+#### options.files
+Type: `String|Array`
 
-#### Default Options
-In this example, the default options are used to do something with whatever. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result would be `Testing, 1 2 3.`
+A glob pattern matching all the files you wish to upload to the deconst content service.
 
-```js
-grunt.initConfig({
-  deconst_assets: {
-    options: {},
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
-  },
-});
-```
 
-#### Custom Options
-In this example, custom options are used to do something else with whatever else. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result in this case would be `Testing: 1 2 3 !!!`
+#### options.output
+Type: `Object`
 
-```js
-grunt.initConfig({
-  deconst_assets: {
-    options: {
-      separator: ': ',
-      punctuation: ' !!!',
-    },
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
-  },
-});
-```
+_(Optional)_ Specifies a file that will be written with all of the final URLs of the uploaded files. Useful if you have CSS or JavaScript that needs to know these URLs.
 
-## Contributing
-In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
+#### options.output.dest
+Type: `String`
 
-## Release History
-_(Nothing yet)_
+A file that will be written with the uploaded files' URLs
+
+#### options.output.format
+Type: `String`
+
+The expected format for the list of URLs. Possible values:
+
+* `json`
+* `less`
+* `sass`
+* `scss`
