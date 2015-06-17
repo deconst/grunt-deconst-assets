@@ -1,7 +1,7 @@
 {
   "name": "grunt-deconst-assets",
   "description": "Submits assets to a deconst asset store",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "homepage": "https://github.com/deconst/grunt-deconst-assets",
   "author": {
     "name": "Keith Bartholomew",
