@@ -45,12 +45,12 @@ grunt.initConfig({
 #### options.contentServiceUrl
 Type: `String`
 
-The URL to your content service **with a trailing slash**. Alternatively, you can set the CONTENT_SERVICE_URL environment variable to this value.
+The URL to your content service **with a trailing slash**. Alternatively, you can set the CONTENT_STORE_URL environment variable to this value.
 
 #### options.contentServiceKey
 Type: `String`
 
-The API key used to authenticate with your content service. Alternatively, you can set the CONTENT_SERVICE_APIKEY environment variable to this value.
+The API key used to authenticate with your content service. Alternatively, you can set the CONTENT_STORE_APIKEY environment variable to this value.
 
 #### options.files
 Type: `String|Array`
