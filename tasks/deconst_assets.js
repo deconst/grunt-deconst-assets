@@ -22,6 +22,10 @@ module.exports = function(grunt) {
         var uploadedFiles = 0;
         var uploads = {};
 
+        if(process.env.TRAVIS_PULL_REQUEST !== 'false') {
+            return done();
+        }
+
         if(ConfigService.load({env: process.env, options: this.options()}) !== true) {
             return grunt.fail.fatal(ConfigService.load({env: process.env, options: this.options()}));
         }
