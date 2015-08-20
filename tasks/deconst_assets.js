@@ -32,7 +32,7 @@ module.exports = function(grunt) {
 
         var afterUpload = function (uploads) {
             if( !this.options().output) {
-                return;
+                return done();
             }
 
             this.options().output.forEach(function (output, index, scope) {
