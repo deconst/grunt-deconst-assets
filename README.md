@@ -2,6 +2,8 @@
 
 > Submits assets to a deconst asset store
 
+[![Docker Repository on Quay.io](https://quay.io/repository/deconst/preparer-asset/status "Docker Repository on Quay.io")](https://quay.io/repository/deconst/preparer-asset)
+
 ## Getting Started
 This plugin requires Grunt `~0.4.5`
 
