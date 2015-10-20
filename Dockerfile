@@ -1,7 +1,9 @@
-FROM node:0.12
+FROM alpine:3.2
 MAINTAINER Ash Wilson <ash.wilson@rackspace.com>
 
-RUN useradd node
+RUN apk add --update nodejs && rm -rf /var/cache/apk/*
+
+RUN adduser -D node
 RUN mkdir -p /home/node /usr/src/app /var/control-repo
 RUN chown -R node:node /home/node
 RUN npm install -g grunt-cli
