@@ -12,6 +12,7 @@ var fs = require('fs');
 var path = require('path');
 var mime = require('mime-types');
 var request = require('request');
+var childProcess = require('child_process');
 var ConfigService = require('../lib/services/config');
 
 module.exports = function(grunt) {
@@ -30,9 +31,21 @@ module.exports = function(grunt) {
             return grunt.fail.fatal(ConfigService.load({env: process.env, options: this.options()}));
         }
 
+        var triggerUpdate = function () {
+          var sha = childProcess.execSync('git rev-parse HEAD', { encoding: 'utf-8' }).trim();
+          request.put({
+              url: ConfigService.get('url') + '/control',
+              headers: {
+                  'Authorization': 'deconst apikey="' + ConfigService.get('key') + '"'
+              },
+              json: true,
+              body: { sha: sha }
+          }, done);
+        };
+
         var afterUpload = function (uploads) {
             if( !this.options().output) {
-                return done();
+                return triggerUpdate();
             }
 
             this.options().output.forEach(function (output, index, scope) {
@@ -48,7 +61,7 @@ module.exports = function(grunt) {
                 formatter({dest: output.dest, data: uploads});
             });
 
-            done();
+            triggerUpdate();
         };
 
         taskFiles.forEach(function (file, index, scope) {
