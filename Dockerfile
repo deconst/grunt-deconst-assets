@@ -1,7 +1,7 @@
 FROM alpine:3.2
 MAINTAINER Ash Wilson <ash.wilson@rackspace.com>
 
-RUN apk add --update nodejs && rm -rf /var/cache/apk/*
+RUN apk add --update nodejs git && rm -rf /var/cache/apk/*
 
 RUN adduser -D node
 RUN mkdir -p /home/node /usr/src/app /var/control-repo
