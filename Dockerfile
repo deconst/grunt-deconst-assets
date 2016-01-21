@@ -6,7 +6,6 @@ RUN apk add --update nodejs git && rm -rf /var/cache/apk/*
 RUN adduser -D node
 RUN mkdir -p /home/node /usr/src/app /var/control-repo
 RUN chown -R node:node /home/node
-RUN npm install -g grunt-cli
 
 COPY script/entrypoint /usr/src/app/script/entrypoint
 
