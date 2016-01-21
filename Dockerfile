@@ -13,6 +13,8 @@ COPY script/entrypoint /usr/src/app/script/entrypoint
 
 VOLUME /var/control-repo
 WORKDIR /var/control-repo
+ENV NPM_CONFIG_CACHE /var/control-repo/.cache/
+ENV TMPDIR /var/control-repo/.tmp/
 
 USER node
 ENTRYPOINT ["/usr/src/app/script/entrypoint"]
