@@ -4,5 +4,7 @@
 
 set -euo pipefail
 
+[ -n "${CONTROL_ROOT:-}" ] && cd ${CONTROL_ROOT}
+
 npm install
 npm run deconst-control-build
