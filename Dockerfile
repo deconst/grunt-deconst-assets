@@ -3,7 +3,7 @@ MAINTAINER Ash Wilson <ash.wilson@rackspace.com>
 
 RUN apk add --update nodejs ruby git && rm -rf /var/cache/apk/*
 
-RUN adduser -D node
+RUN adduser -D -g "" -u 1000 node
 RUN mkdir -p /home/node /usr/src/app /var/control-repo
 RUN chown -R node:node /home/node
 
