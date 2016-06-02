@@ -78,7 +78,7 @@ module.exports = function(grunt) {
             request.post({
                 url: ConfigService.get('url') + '/assets?named=true',
                 headers: {
-                    'Authorization': 'deconst apikey="' + ConfigService.get('key') + '"'
+                    'Authorization': 'deconst ' + ConfigService.get('key')
                 },
                 formData: formData
             }, function (error, response, body) {
