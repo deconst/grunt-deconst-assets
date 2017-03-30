@@ -82,6 +82,11 @@ module.exports = function(grunt) {
                 },
                 formData: formData
             }, function (error, response, body) {
+                // API key is provided but invalid
+                if (response && response.statusCode === 401) {
+                    grunt.fail.fatal("API Key Invalid");
+                }
+
                 var jsonBody;
 
                 try {
