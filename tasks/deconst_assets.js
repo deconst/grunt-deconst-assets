@@ -101,7 +101,6 @@ module.exports = function(grunt) {
                     jsonBody = JSON.parse(body);
                 }
                 catch (e) {
-                    console.warn(err);
                     grunt.fail.fatal(e);
                 }
 
