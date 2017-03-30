@@ -80,15 +80,27 @@ module.exports = function(grunt) {
                 headers: {
                     'Authorization': 'deconst ' + ConfigService.get('key')
                 },
-                formData: formData
-            }, function (error, response, body) {
+                formData: formData,
+                timeout: 60000
+            }, function (err, response, body) {
+                if (err) {
+                    grunt.fail.fatal(err);
+                }
+
+                // API key is provided but invalid
+                if (response && response.statusCode === 401) {
+                    grunt.fail.fatal("401 Unauthorized: Please confirm your access including your API Key");
+                }
+                else if (response && response.statusCode >= 400) {
+                    grunt.fail.fatal("Unknown server response");
+                }
+
                 var jsonBody;
 
                 try {
                     jsonBody = JSON.parse(body);
                 }
                 catch (e) {
-                    console.warn(error);
                     grunt.fail.fatal(e);
                 }
 
