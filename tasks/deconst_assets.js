@@ -89,9 +89,9 @@ module.exports = function(grunt) {
 
                 // API key is provided but invalid
                 if (response && response.statusCode === 401) {
-                    grunt.fail.fatal("API Key Invalid");
+                    grunt.fail.fatal("401 Unauthorized: Please confirm your access including your API Key");
                 }
-                else if (response && response.statusCode !== 200) {
+                else if (response && response.statusCode >= 400) {
                     grunt.fail.fatal("Unknown server response");
                 }
 
