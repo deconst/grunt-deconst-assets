@@ -1,5 +1,5 @@
 FROM alpine:3.6
-LABEL maintainer="Laura Santamaria <laura.santamaria@rackspace.com"
+LABEL maintainer="Laura Santamaria <laura.santamaria@rackspace.com>"
 
 RUN apk add --update nodejs ruby git build-base ruby-dev libffi-dev && rm -rf /var/cache/apk/*
 
